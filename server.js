@@ -63,6 +63,13 @@ app.post("/upload-model", upload.single("model"), (req, res) => {
     console.log(`✅ Model uploaded: ${req.file.filename}`);
     res.json({ message: "Model uploaded successfully.", filename: req.file.filename });
 });
+app.get("/list-models", (req, res) => {
+    fs.readdir("/tmp/models", (err, files) => {
+        if (err) return res.status(500).json({ error: "Cannot read models folder" });
+        res.json({ models: files });
+    });
+});
+
 
 // Start the server
 app.listen(PORT, () => {
