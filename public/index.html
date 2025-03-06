@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Worker</title>
+</head>
+<body>
+    <h1>Federated Learning Worker</h1>
+    <button id="download-dataset">Download Dataset</button>
+    <br><br>
+    <input type="file" id="model-file">
+    <button id="upload-model">Upload Model</button>
+
+    <script>
+        const SERVER_URL = "http://localhost:5000"; // Replace with your actual Render URL
+
+        document.getElementById("download-dataset").addEventListener("click", () => {
+            window.location.href = `${SERVER_URL}/get-dataset`;
+        });
+
+        document.getElementById("upload-model").addEventListener("click", async () => {
+            const fileInput = document.getElementById("model-file");
+            if (fileInput.files.length === 0) {
+                alert("Please select a model file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("model", fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${SERVER_URL}/upload-model`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Model uploaded successfully!");
+                } else {
+                    alert("Upload failed: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error uploading model:", error);
+                alert("Error uploading model.");
+            }
+        });
+    </script>
+</body>
+</html>
